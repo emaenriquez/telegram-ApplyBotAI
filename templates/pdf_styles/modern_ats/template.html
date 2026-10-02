@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ cv.full_name }} - Currículum Vitae</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="resume-container">
+    <!-- Header -->
+    <header class="header">
+      <h1 class="name">{{ cv.full_name }}</h1>
+      <h2 class="headline">{{ cv.headline }}</h2>
+      <div class="contact-info">
+        {% if cv.email %}<span>📧 {{ cv.email }}</span>{% endif %}
+        {% if cv.phone %}<span>📱 {{ cv.phone }}</span>{% endif %}
+        {% if cv.location %}<span>📍 {{ cv.location }}</span>{% endif %}
+        {% if cv.linkedin_url %}<span>🔗 <a href="{{ cv.linkedin_url }}">LinkedIn</a></span>{% endif %}
+        {% if cv.github_url %}<span>💻 <a href="{{ cv.github_url }}">GitHub</a></span>{% endif %}
+        {% if cv.portfolio_url %}<span>🌐 <a href="{{ cv.portfolio_url }}">Portafolio</a></span>{% endif %}
+      </div>
+    </header>
+
+    <!-- Resumen Profesional -->
+    {% if cv.summary %}
+    <section class="section">
+      <h3 class="section-title">Resumen Profesional</h3>
+      <p class="summary-text">{{ cv.summary }}</p>
+    </section>
+    {% endif %}
+
+    <!-- Habilidades Clave / ATS Keywords -->
+    {% if cv.highlighted_skills %}
+    <section class="section">
+      <h3 class="section-title">Habilidades Técnicas y Competencias</h3>
+      <div class="skills-grid">
+        {% for skill in cv.highlighted_skills %}
+        <span class="skill-tag">{{ skill }}</span>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Experiencia Laboral -->
+    {% if cv.experience %}
+    <section class="section">
+      <h3 class="section-title">Experiencia Laboral</h3>
+      {% for exp in cv.experience %}
+      <div class="experience-item">
+        <div class="item-header">
+          <span class="role">{{ exp.role }}</span>
+          <span class="dates">{{ exp.start_date }} - {{ exp.end_date }}</span>
+        </div>
+        <div class="item-subheader">
+          <span class="company">{{ exp.company }}</span>
+          {% if exp.location %}<span class="location">| {{ exp.location }}</span>{% endif %}
+        </div>
+        {% if exp.achievements %}
+        <ul class="achievements-list">
+          {% for ach in exp.achievements %}
+          <li>{{ ach }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if exp.technologies %}
+        <div class="technologies-used">
+          <small><strong>Tecnologías:</strong> {{ exp.technologies | join(', ') }}</small>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Proyectos Destacados -->
+    {% if cv.projects %}
+    <section class="section">
+      <h3 class="section-title">Proyectos Destacados</h3>
+      {% for proj in cv.projects %}
+      <div class="project-item">
+        <div class="item-header">
+          <span class="role">{{ proj.name }}</span>
+          {% if proj.url %}<span class="dates"><a href="{{ proj.url }}">{{ proj.url }}</a></span>{% endif %}
+        </div>
+        <p class="project-description">{{ proj.description }}</p>
+        {% if proj.technologies %}
+        <div class="technologies-used">
+          <small><strong>Tecnologías:</strong> {{ proj.technologies | join(', ') }}</small>
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Educación -->
+    {% if cv.education %}
+    <section class="section">
+      <h3 class="section-title">Educación y Certificaciones</h3>
+      {% for edu in cv.education %}
+      <div class="education-item">
+        <div class="item-header">
+          <span class="role">{{ edu.degree }}</span>
+          <span class="dates">{{ edu.year }}</span>
+        </div>
+        <div class="item-subheader">
+          <span class="company">{{ edu.institution }}</span>
+          {% if edu.details %}<span class="location">| {{ edu.details }}</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </section>
+    {% endif %}
+
+    <!-- Idiomas -->
+    {% if cv.languages %}
+    <section class="section">
+      <h3 class="section-title">Idiomas</h3>
+      <p class="languages-text">{{ cv.languages | join(' • ') }}</p>
+    </section>
+    {% endif %}
+  </div>
+</body>
+</html>

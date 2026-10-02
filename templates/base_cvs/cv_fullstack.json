@@ -1,0 +1,73 @@
+{
+  "id": "cv_fullstack",
+  "full_name": "Juan Pérez",
+  "headline": "Full Stack Developer | Python, React & Cloud Solutions",
+  "email": "juan.perez.dev@email.com",
+  "phone": "+34 600 123 456",
+  "location": "Madrid, España (Remoto)",
+  "linkedin_url": "https://linkedin.com/in/juanperez-dev",
+  "github_url": "https://github.com/juanperez-dev",
+  "portfolio_url": "https://juanperez.dev",
+  "summary": "Desarrollador Full Stack con amplia experiencia conectando interfaces web modernas y reactivas (React, TypeScript, Next.js) con arquitecturas de backend robustas basadas en Python (FastAPI, Django). Especializado en desarrollo integral de productos digitales de punta a punta, pruebas automatizadas y despliegues continuos.",
+  "skills": [
+    "Python",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "FastAPI",
+    "Tailwind CSS",
+    "PostgreSQL",
+    "Node.js",
+    "Docker",
+    "GraphQL & REST APIs",
+    "Git",
+    "Jest & Pytest"
+  ],
+  "experience": [
+    {
+      "role": "Full Stack Software Engineer",
+      "company": "Digital Horizon",
+      "location": "Remoto",
+      "start_date": "Junio 2021",
+      "end_date": "Presente",
+      "achievements": [
+        "Lideré el desarrollo full stack de una plataforma SaaS B2B utilizando Next.js en el frontend y FastAPI en el backend.",
+        "Implementé interfaces accesibles y de carga ultrarrápida con Core Web Vitals optimizados al 95+ score en Lighthouse.",
+        "Diseñé contratos de API tipados de extremo a extremo utilizando TypeScript y esquemas OpenAPI generados automáticamente."
+      ],
+      "technologies": ["React", "TypeScript", "Python", "FastAPI", "PostgreSQL", "Tailwind CSS"]
+    },
+    {
+      "role": "Software Developer",
+      "company": "WebTech Agency",
+      "location": "Madrid, España",
+      "start_date": "Febrero 2019",
+      "end_date": "Mayo 2021",
+      "achievements": [
+        "Desarrollé más de 12 aplicaciones web para clientes corporativos utilizando React y Django REST Framework.",
+        "Optimicé el flujo de trabajo del equipo configurando pipelines de integración continua en GitLab CI."
+      ],
+      "technologies": ["JavaScript", "Python", "Django", "React", "PostgreSQL"]
+    }
+  ],
+  "projects": [
+    {
+      "name": "E-Commerce Dashboard",
+      "description": "Panel administrativo interactivo en tiempo real con WebSockets, gráficos dinámicos y pasarela Stripe.",
+      "technologies": ["Next.js", "FastAPI", "WebSockets", "Stripe API"],
+      "url": "https://github.com/juanperez-dev/ecommerce-dashboard"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Grado en Ingeniería Informática",
+      "institution": "Universidad Politécnica de Madrid",
+      "year": "2014 - 2018",
+      "details": "Graduado con enfoque en Ingeniería de Software"
+    }
+  ],
+  "languages": [
+    "Español (Nativo)",
+    "Inglés (Profesional / C1)"
+  ]
+}

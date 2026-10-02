@@ -1,0 +1,31 @@
+# ==============================================================================
+# DEPENDENCIAS - AI JOB APPLICATION ASSISTANT
+# ==============================================================================
+
+# Bot de Telegram
+python-telegram-bot==21.10
+
+# Inteligencia Artificial - Google Gemini
+google-genai>=0.1.1
+google-generativeai>=0.8.3
+
+# Validación de Datos y Configuración
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+python-dotenv>=1.0.1
+
+# Scraping y Extracción Web
+httpx>=0.28.1
+beautifulsoup4>=4.12.3
+playwright>=1.50.0
+
+# Motor de Plantillas y Generación de PDF
+jinja2>=3.1.5
+
+# Integración con Gmail (Borradores y Adjuntos)
+google-api-python-client>=2.160.0
+google-auth-httplib2>=0.2.0
+google-auth-oauthlib>=1.2.1
+
+# Base de Datos Asíncrona (SQLite)
+aiosqlite>=0.21.0

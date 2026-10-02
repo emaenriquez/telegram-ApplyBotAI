@@ -1,0 +1,74 @@
+{
+  "id": "cv_backend_python",
+  "full_name": "Juan Pérez",
+  "headline": "Senior Backend Engineer | Python & Cloud Architecture",
+  "email": "juan.perez.dev@email.com",
+  "phone": "+34 600 123 456",
+  "location": "Madrid, España (Remoto)",
+  "linkedin_url": "https://linkedin.com/in/juanperez-dev",
+  "github_url": "https://github.com/juanperez-dev",
+  "portfolio_url": "https://juanperez.dev",
+  "summary": "Ingeniero de Software Senior con más de 6 años de experiencia especializándome en desarrollo Backend de alto rendimiento con Python (FastAPI, Django), arquitectura de microservicios, bases de datos distribuidas y despliegues en AWS. Experiencia liderando migraciones a Kubernetes y optimizando tiempos de respuesta de APIs críticas en un 40%.",
+  "skills": [
+    "Python",
+    "FastAPI",
+    "Django",
+    "PostgreSQL",
+    "Redis",
+    "Docker",
+    "Kubernetes",
+    "AWS (ECS, Lambda, S3, RDS)",
+    "CI/CD (GitHub Actions)",
+    "Microservicios",
+    "RabbitMQ / Kafka",
+    "Pytest & TDD"
+  ],
+  "experience": [
+    {
+      "role": "Senior Backend Developer",
+      "company": "TechSolutions Global",
+      "location": "Remoto",
+      "start_date": "Marzo 2022",
+      "end_date": "Presente",
+      "achievements": [
+        "Diseñé e implementé la arquitectura de microservicios con FastAPI y PostgreSQL procesando más de 5 millones de transacciones diarias.",
+        "Reduje la latencia p99 de los endpoints en un 45% mediante caché estratégica con Redis y optimización de consultas SQL.",
+        "Lideré la migración de infraestructura monolítica a contenedores Docker gestionados en AWS ECS con pipelines automatizados en GitHub Actions."
+      ],
+      "technologies": ["Python", "FastAPI", "PostgreSQL", "Redis", "AWS ECS", "Docker", "Git"]
+    },
+    {
+      "role": "Backend Software Developer",
+      "company": "Innovatech Apps",
+      "location": "Madrid, España",
+      "start_date": "Enero 2019",
+      "end_date": "Febrero 2022",
+      "achievements": [
+        "Desarrollé APIs RESTful seguras con Django REST Framework para plataformas fintech cumpliendo estándares PCI-DSS.",
+        "Implementé colas de procesamiento asíncrono con Celery y RabbitMQ reduciendo el tiempo de generación de reportes en un 60%.",
+        "Aumenté la cobertura de pruebas unitarias y de integración del 40% al 88% con Pytest."
+      ],
+      "technologies": ["Python", "Django", "Celery", "RabbitMQ", "PostgreSQL", "Pytest"]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Async Job Scheduler",
+      "description": "Orquestador de tareas distribuidas en Python de alta disponibilidad con métricas Prometheus.",
+      "technologies": ["Python", "AsyncIO", "FastAPI", "Redis"],
+      "url": "https://github.com/juanperez-dev/job-scheduler"
+    }
+  ],
+  "education": [
+    {
+      "degree": "Grado en Ingeniería Informática",
+      "institution": "Universidad Politécnica de Madrid",
+      "year": "2014 - 2018",
+      "details": "Mención especial en Sistemas Distribuidos y Redes"
+    }
+  ],
+  "languages": [
+    "Español (Nativo)",
+    "Inglés (Profesional / C1)"
+  ]
+}
