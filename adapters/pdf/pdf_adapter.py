@@ -79,6 +79,14 @@ class PDFAdapter:
         try:
             from playwright.async_api import async_playwright
 
+            # ponytail: Playwright crea dir temporal en Temp del sistema; falla con EPERM
+            # bajo sandbox/antivirus. Redirigir a carpeta local ya escribible.
+            local_tmp = self.output_dir / ".tmp"
+            local_tmp.mkdir(parents=True, exist_ok=True)
+            os.environ["TEMP"] = str(local_tmp)
+            os.environ["TMP"] = str(local_tmp)
+            os.environ["TMPDIR"] = str(local_tmp)
+
             async with async_playwright() as p:
                 browser = await p.chromium.launch(headless=True)
                 page = await browser.new_page()

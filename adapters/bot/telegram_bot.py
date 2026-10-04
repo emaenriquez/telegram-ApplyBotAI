@@ -162,12 +162,9 @@ class TelegramAssistantBot:
                 f"**CV Base Usado:** `{selected_profile.id}`\n\n"
                 f"**Coincidencias clave:** {matching_str}\n"
                 f"**Habilidades faltantes/deseables:** {missing_str}\n\n"
-                f"{contact_info}\n"
-                f"**Nuevo Resumen Adaptado:**\n"
-                f"_{tailored_cv.summary}_\n\n"
+                f"{contact_info}"
                 f"**Estrategia aplicada:**\n"
-                f"{tailored_cv.tailoring_rationale}\n\n"
-                "¿Qué deseas hacer a continuación?"
+                f"{tailored_cv.tailoring_rationale}"
             )
 
             keyboard = [
@@ -183,7 +180,9 @@ class TelegramAssistantBot:
             reply_markup = InlineKeyboardMarkup(keyboard)
 
             await status_msg.delete()
-            await update.message.reply_text(response_text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+            await update.message.reply_text(response_text, parse_mode=ParseMode.MARKDOWN)
+            await update.message.reply_text(self._format_cv_preview(tailored_cv), parse_mode=ParseMode.MARKDOWN)
+            await update.message.reply_text("¿Qué deseas hacer a continuación?", reply_markup=reply_markup)
             return REVIEWING_PROPOSAL
 
         except Exception as e:
@@ -199,6 +198,64 @@ class TelegramAssistantBot:
                 error_msg = f"Ocurrió un error al procesar la vacante:\n`{str(e)}`"
             await status_msg.edit_text(error_msg, parse_mode=ParseMode.MARKDOWN)
             return WAITING_JOB_INPUT
+
+    @staticmethod
+    def _options_keyboard() -> InlineKeyboardMarkup:
+        """Teclado principal de opciones tras el análisis."""
+        return InlineKeyboardMarkup([
+            [
+                InlineKeyboardButton("Generar PDF y Borrador", callback_data="approve_all"),
+                InlineKeyboardButton("Solo Generar PDF", callback_data="only_pdf")
+            ],
+            [
+                InlineKeyboardButton("Solicitar Ajustes", callback_data="request_changes"),
+                InlineKeyboardButton("Descartar", callback_data="discard")
+            ]
+        ])
+
+    @staticmethod
+    def _format_cv_preview(cv) -> str:
+        """Formatea el CV adaptado completo como texto para revisión previa."""
+        lines = ["📄 **Vista previa del CV adaptado**\n"]
+        lines.append(f"**{cv.full_name}** — {cv.headline}\n")
+
+        contact = []
+        if cv.email:
+            contact.append(f"📧 {cv.email}")
+        if cv.phone:
+            contact.append(f"📱 {cv.phone}")
+        if cv.location:
+            contact.append(f"📍 {cv.location}")
+        if contact:
+            lines.append(" · ".join(contact) + "\n")
+
+        if cv.summary:
+            lines.append("**Resumen**\n" + cv.summary + "\n")
+
+        if cv.highlighted_skills:
+            lines.append("**Habilidades**\n" + ", ".join(cv.highlighted_skills) + "\n")
+
+        if cv.experience:
+            lines.append("**Experiencia Laboral**")
+            for exp in cv.experience:
+                lines.append(f"\n• *{exp.role}* — {exp.company} ({exp.start_date} – {exp.end_date})")
+                for ach in exp.achievements:
+                    lines.append(f"    - {ach}")
+
+        if cv.projects:
+            lines.append("\n**Proyectos**")
+            for proj in cv.projects:
+                lines.append(f"\n• *{proj.name}*: {proj.description}")
+
+        if cv.education:
+            lines.append("\n**Educación**")
+            for edu in cv.education:
+                lines.append(f"\n• {edu.degree} — {edu.institution} ({edu.year})")
+
+        if cv.languages:
+            lines.append("\n**Idiomas**\n" + ", ".join(cv.languages))
+
+        return "\n".join(lines)
 
     async def handle_proposal_action(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         """Maneja las acciones de los botones interactivos."""
@@ -273,17 +330,89 @@ class TelegramAssistantBot:
                     draft_id=draft_id
                 )
 
-                await query.message.reply_text(
-                    f"✅ **Postulación registrada exitosamente** (ID: `#{app_id}`).\n"
-                    "¡Listo para enviar cuando tú decidas! Envía otra vacante para procesar."
+                if action == "approve_all":
+                    await query.message.reply_text(
+                        f"✅ **Postulación registrada exitosamente** (ID: `#{app_id}`).\n"
+                        "¡Listo para enviar cuando tú decidas! Envía otra vacante para procesar."
+                    )
+                    context.user_data.clear()
+                    return ConversationHandler.END
+
+                # only_pdf: dejar la puerta abierta para crear el email después
+                context.user_data["pdf_path"] = pdf_path
+                context.user_data["app_id"] = app_id
+
+                await query.edit_message_text("📄 **PDF generado y enviado por Telegram.**")
+                follow_up = (
+                    f"✅ **Postulación registrada** (ID: `#{app_id}`).\n"
+                    "PDF listo. ¿Quieres crear también el borrador de email?"
                 )
-                context.user_data.clear()
-                return ConversationHandler.END
+                follow_keyboard = InlineKeyboardMarkup([[
+                    InlineKeyboardButton("✉️ Enviar email", callback_data="send_email_now"),
+                    InlineKeyboardButton("✅ Terminar", callback_data="finish")
+                ]])
+                await query.message.reply_text(follow_up, reply_markup=follow_keyboard, parse_mode=ParseMode.MARKDOWN)
+                return REVIEWING_PROPOSAL
 
             except Exception as e:
                 logger.error(f"Error generando PDF o borrador: {e}", exc_info=True)
-                await query.message.reply_text(f"❌ Ocurrió un error en la generación:\n`{str(e)}`")
+                await query.message.reply_text(
+                    f"❌ Ocurrió un error en la generación:\n`{str(e)}`\n\n"
+                    "Puedes reintentarlo o elegir otra opción:",
+                    reply_markup=self._options_keyboard(),
+                    parse_mode=ParseMode.MARKDOWN
+                )
+                return REVIEWING_PROPOSAL
+
+        if action == "send_email_now":
+            pdf_path = context.user_data.get("pdf_path")
+            app_id = context.user_data.get("app_id")
+            if not pdf_path or not vacancy or not tailored_cv:
+                await query.edit_message_text("❌ No hay datos para generar el email. Envía una nueva vacante.")
+                context.user_data.clear()
                 return ConversationHandler.END
+
+            await query.edit_message_text("✉️ Redactando email y creando borrador en Gmail...")
+            try:
+                proposal, draft_id = await self.service.prepare_email_draft(
+                    vacancy=vacancy,
+                    cv=tailored_cv,
+                    pdf_path=pdf_path
+                )
+                if app_id is not None:
+                    await self.service.storage.update_status(
+                        app_id, ApplicationStatus.DRAFT_CREATED, draft_id=draft_id
+                    )
+
+                email_msg = (
+                    "📬 **¡Borrador creado en Gmail!**\n\n"
+                    f"• **Destinatario:** `{proposal.recipient or 'Pendiente'}`\n"
+                    f"• **Asunto:** `{proposal.subject}`\n"
+                    f"• **Adjunto:** `{os.path.basename(pdf_path)}`\n\n"
+                    "📝 **Cuerpo del correo preparado:**\n"
+                    f"```\n{proposal.body}\n```\n\n"
+                    "🔒 *El correo quedó guardado en tu carpeta 'Borradores' para que lo revises antes de enviarlo.*"
+                )
+                await query.message.reply_text(email_msg, parse_mode=ParseMode.MARKDOWN)
+            except Exception as e:
+                logger.error(f"Error creando borrador de email: {e}", exc_info=True)
+                await query.message.reply_text(
+                    f"❌ Ocurrió un error creando el email:\n`{str(e)}`\n\n"
+                    "Puedes reintentarlo:",
+                    reply_markup=InlineKeyboardMarkup([[
+                        InlineKeyboardButton("✉️ Reintentar email", callback_data="send_email_now"),
+                        InlineKeyboardButton("✅ Terminar", callback_data="finish")
+                    ]]),
+                    parse_mode=ParseMode.MARKDOWN
+                )
+                return REVIEWING_PROPOSAL
+            context.user_data.clear()
+            return ConversationHandler.END
+
+        if action == "finish":
+            await query.edit_message_text("✅ Proceso finalizado. Envía otra vacante cuando quieras.")
+            context.user_data.clear()
+            return ConversationHandler.END
 
         return REVIEWING_PROPOSAL
 
@@ -308,9 +437,7 @@ class TelegramAssistantBot:
             response_text = (
                 f"✨ **CV Re-adaptado con tus ajustes:**\n\n"
                 f"🎯 **Puesto:** {vacancy.title} en {vacancy.company}\n\n"
-                f"📝 **Nuevo Resumen:**\n_{updated_cv.summary}_\n\n"
-                f"💡 **Racional actualizado:**\n{updated_cv.tailoring_rationale}\n\n"
-                "¿Aprobamos esta versión o deseas otro ajuste?"
+                f"💡 **Racional actualizado:**\n{updated_cv.tailoring_rationale}"
             )
 
             keyboard = [
@@ -326,7 +453,9 @@ class TelegramAssistantBot:
             reply_markup = InlineKeyboardMarkup(keyboard)
 
             await status_msg.delete()
-            await update.message.reply_text(response_text, reply_markup=reply_markup, parse_mode=ParseMode.MARKDOWN)
+            await update.message.reply_text(response_text, parse_mode=ParseMode.MARKDOWN)
+            await update.message.reply_text(self._format_cv_preview(updated_cv), parse_mode=ParseMode.MARKDOWN)
+            await update.message.reply_text("¿Aprobamos esta versión o deseas otro ajuste?", reply_markup=reply_markup)
             return REVIEWING_PROPOSAL
 
         except Exception as e:

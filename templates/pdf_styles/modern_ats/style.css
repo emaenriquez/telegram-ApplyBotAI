@@ -1,7 +1,7 @@
-/* Estilos CSS profesionales optimizados para A4 y ATS */
+/* Estilos ATS limpios: paleta slate, sin emojis, sin pills */
 @page {
   size: A4;
-  margin: 1.2cm 1.5cm;
+  margin: 1.5cm 1.6cm;
 }
 
 * {
@@ -11,9 +11,9 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  color: #24292e;
-  line-height: 1.45;
+  font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #1d293d;
+  line-height: 1.42;
   font-size: 10pt;
   background-color: #ffffff;
 }
@@ -24,80 +24,65 @@ body {
 
 /* Header */
 .header {
-  border-bottom: 2px solid #2b4c7e;
-  padding-bottom: 8px;
-  margin-bottom: 12px;
+  border-bottom: 1.5px solid #1d293d;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
 }
 
 .name {
-  font-size: 20pt;
+  font-size: 22pt;
   font-weight: 700;
-  color: #1a2a3a;
-  letter-spacing: -0.5px;
-  margin-bottom: 2px;
+  color: #0f172b;
+  letter-spacing: 0.2px;
+  margin-bottom: 3px;
 }
 
 .headline {
-  font-size: 11pt;
+  font-size: 11.5pt;
   font-weight: 600;
-  color: #2b4c7e;
+  color: #314158;
   margin-bottom: 6px;
 }
 
 .contact-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-size: 8.5pt;
-  color: #555555;
+  font-size: 9pt;
+  color: #45556c;
+  line-height: 1.5;
 }
 
-.contact-info a {
-  color: #2b4c7e;
-  text-decoration: none;
+.contact-info span + span::before {
+  content: "  ·  ";
+  color: #94a3b8;
 }
 
 /* Sections */
 .section {
-  margin-bottom: 11px;
+  margin-bottom: 12px;
 }
 
 .section-title {
-  font-size: 11pt;
+  font-size: 10.5pt;
   font-weight: 700;
-  color: #1a2a3a;
+  color: #0f172b;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid #d0d7de;
-  padding-bottom: 2px;
-  margin-bottom: 6px;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 3px;
+  margin-bottom: 7px;
+}
+
+.summary-text,
+.skills-text {
+  font-size: 9.5pt;
+  color: #1d293d;
 }
 
 .summary-text {
-  font-size: 9.5pt;
-  color: #333333;
   text-align: justify;
 }
 
-/* Skills */
-.skills-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-.skill-tag {
-  background-color: #f1f4f9;
-  color: #1a2a3a;
-  border: 1px solid #d2dbe8;
-  padding: 2px 7px;
-  border-radius: 3px;
-  font-size: 8.5pt;
-  font-weight: 500;
-}
-
-/* Experience & Items */
-.experience-item, .project-item, .education-item {
+/* Items */
+.item {
   margin-bottom: 8px;
   page-break-inside: avoid;
 }
@@ -106,52 +91,46 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap: 10px;
 }
 
 .role {
   font-weight: 700;
   font-size: 10pt;
-  color: #1a2a3a;
+  color: #0f172b;
 }
 
 .dates {
   font-size: 8.5pt;
-  color: #666666;
-  font-weight: 500;
+  color: #45556c;
+  white-space: nowrap;
 }
 
-.item-subheader {
+.item-sub {
   font-size: 9pt;
-  font-weight: 600;
-  color: #4a5568;
-  margin-bottom: 3px;
-}
-
-.achievements-list {
-  padding-left: 16px;
-  margin-top: 2px;
-  margin-bottom: 3px;
-}
-
-.achievements-list li {
-  font-size: 9pt;
-  color: #333333;
+  color: #314158;
   margin-bottom: 2px;
 }
 
-.technologies-used {
-  font-size: 8pt;
-  color: #666666;
-  margin-top: 2px;
+.location::before {
+  content: "  ·  ";
+  color: #94a3b8;
 }
 
-.project-description {
-  font-size: 9pt;
-  color: #333333;
+.list {
+  padding-left: 16px;
   margin-top: 2px;
+  margin-bottom: 2px;
 }
 
-.languages-text {
+.list li {
   font-size: 9pt;
-  color: #333333;
+  color: #1d293d;
+  margin-bottom: 1px;
+}
+
+.tech {
+  font-size: 8.5pt;
+  color: #45556c;
+  margin-top: 2px;
 }

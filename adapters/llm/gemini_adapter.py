@@ -129,6 +129,11 @@ class GeminiAdapter:
         if not data.get("description_raw"):
             data["description_raw"] = text[:2000]
 
+        # Gemini a veces devuelve null en campos obligatorios; evitar fallo de validación
+        for field in ("title", "company"):
+            if data.get(field) is None:
+                data[field] = ""
+
         return JobPosting(**data)
 
     async def analyze_match(self, vacancy: JobPosting, base_profiles: List[UserProfile]) -> MatchScoreResult:

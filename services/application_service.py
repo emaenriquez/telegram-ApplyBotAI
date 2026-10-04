@@ -126,7 +126,11 @@ class ApplicationCoordinatorService:
     ) -> Tuple[EmailDraftProposal, str]:
         """Genera el contenido del correo y lo guarda como borrador en Gmail con el PDF adjunto."""
         email_proposal = await self.llm.generate_email_draft(vacancy, cv)
-        recipient = vacancy.recruiter_email or email_proposal.recipient
+        recipient = (vacancy.recruiter_email or email_proposal.recipient or "").strip()
+        # Solo emails válidos; si no, borrador sin destinatario (Gmail rechaza "To" inválido)
+        if not recipient or "@" not in recipient or " " in recipient:
+            recipient = None
+        email_proposal.recipient = recipient
 
         # Si la vacante especifica un asunto obligatorio, usarlo en vez del generado por IA
         subject = vacancy.required_email_subject or email_proposal.subject

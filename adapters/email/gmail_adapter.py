@@ -33,13 +33,6 @@ class GmailAdapter:
         if self._service:
             return self._service
 
-        if not os.path.exists(self.credentials_file):
-            logger.warning(
-                f"Archivo de credenciales '{self.credentials_file}' no encontrado. "
-                "Para activar la creación de borradores reales en Gmail, descarga las credenciales OAuth 2.0."
-            )
-            return None
-
         try:
             from google.auth.transport.requests import Request
             from google.oauth2.credentials import Credentials
@@ -54,6 +47,12 @@ class GmailAdapter:
                 if creds and creds.expired and creds.refresh_token:
                     creds.refresh(Request())
                 else:
+                    if not os.path.exists(self.credentials_file):
+                        logger.warning(
+                            f"Archivo de credenciales '{self.credentials_file}' no encontrado. "
+                            "Para activar la creación de borradores reales en Gmail, descarga las credenciales OAuth 2.0."
+                        )
+                        return None
                     flow = InstalledAppFlow.from_client_secrets_file(self.credentials_file, GMAIL_SCOPES)
                     creds = flow.run_local_server(port=0)
 
@@ -81,7 +80,12 @@ class GmailAdapter:
         service = self._get_service()
 
         message = MIMEMultipart()
-        message["to"] = recipient or "[AGREGAR_EMAIL_DESTINATARIO]"
+        # Gmail rechaza "To" inválido (placeholder o nombre sin email). Sin destinatario válido, omitir To.
+        recipient = (recipient or "").strip()
+        if recipient and "@" in recipient and " " not in recipient:
+            message["to"] = recipient
+        else:
+            logger.warning(f"Destinatario inválido o ausente ({recipient!r}); borrador sin campo 'To'.")
         message["subject"] = subject
 
         # Agregar cuerpo
@@ -120,8 +124,9 @@ class GmailAdapter:
         raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
 
         if not service:
-            logger.info("Modo de simulación de borrador (credenciales de Gmail pendientes).")
-            return "simulated_draft_id_pending_gmail_credentials"
+            raise RuntimeError(
+                "Gmail API no configurado. Falta 'credentials.json' o el token.json no es válido."
+            )
 
         draft_body = {"message": {"raw": raw_message}}
         created_draft = service.users().drafts().create(userId="me", body=draft_body).execute()
